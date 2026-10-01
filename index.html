@@ -33,6 +33,17 @@ tr:last-child td{border-bottom:0}
 .note{background:var(--warn-bg);border-left:3px solid var(--warn);padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px;margin-top:14px}
 code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--code);border:1px solid var(--line);padding:0 5px;border-radius:4px}
 @media print{.box{max-height:none;overflow:visible}button,.toast{display:none}body{background:#fff}}
+
+.why{margin-top:26px;display:grid;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.card h4{margin:0 0 6px;font-size:15.5px}
+.card p{margin:6px 0}
+.card ul{margin:6px 0;padding-left:20px}.card li{margin:3px 0}
+.fig{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;margin:8px 0}
+.barw{flex:1 1 220px;min-width:180px}
+.bar{height:12px;border-radius:6px;background:var(--accent)}
+.bar.off{background:var(--muted);opacity:.55}
+.lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 </style></head><body><div class="wrap">
 <div class="eyebrow">林さん用 ・ 2026年10月</div>
 <h1>Codex スターターキット</h1>
@@ -42,6 +53,40 @@ code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--cod
 <li>下の①をコピーして貼る<b>Codexが設定ファイルを自分で作ります。確認が出たら「許可」</b></li>
 <li>Codex を再起動<b>これで設定が効きます。以後は②の形で頼むだけ</b></li>
 </ol>
+<h3>この設定でやっていること（理由つき）</h3>
+<div class="why">
+<div class="card"><h4>1. 裏で「複数のAI」を動かさない</h4>
+<p>Codexには、作業を速くするために、裏で子分のAI（サブエージェント）を何人も立てて同時に作業させる機能があります。この設定では、これを止めています。</p>
+<ul>
+<li><b>使う量が人数分ふえる</b>：子分も1人ずつ自分で考えて動くので、同じ仕事でもAIの使用量（トークン）が何倍にもなります。ChatGPTのプランは使える量に上限があり（5時間ごと・1週間ごと）、すぐに「上限に達しました」で止まってしまいます。</li>
+<li><b>使わなくても毎回ムダがある</b>：この機能がオンだと、毎回の会話に「子分を呼ぶ道具の説明書」が入り、それだけで1回ごとに余計に使います。止めると毎回の会話が約1割軽くなりました（実際に測った数字です）。</li>
+<li><b>何をしたか追いにくい</b>：複数のAIが同時に同じファイルを触ると、誰が何を変えたのか分かりにくくなります。</li>
+<li><b>指示書に書くだけでは止まらない</b>：「使わないで」と書いても、それは"お願い"です。AIが「今回は並列の方が速い」と判断すると使ってしまいます。なので<b>設定ファイルで機能ごと消しています</b>。</li>
+</ul>
+<div class="fig"><span style="min-width:7em">1回あたりの量</span><div class="barw"><div class="lbl"><span>オンのまま</span><span>100</span></div><div class="bar off" style="width:100%"></div></div></div>
+<div class="fig"><span style="min-width:7em"></span><div class="barw"><div class="lbl"><span>この設定（止めた状態）</span><span>約88</span></div><div class="bar" style="width:88%"></div></div></div>
+<p class="sub">何もしていない状態の会話1回分の比較（Codex 0.153・2026年9月に実測）。実際に子分を動かした場合の差は、これよりずっと大きくなります。</p>
+</div>
+<div class="card"><h4>2. 危ない操作の前に止まる</h4>
+<ul>
+<li><b>開いたフォルダの中だけ自由に直せる</b>：それ以外の場所を触る時や、削除・外部への送信・お金がかかる操作の前には、必ず確認を取ります。</li>
+<li><b>毎回の確認が多すぎないように</b>：フォルダの中の作業はいちいち聞かずに進めるので、手が止まりません。</li>
+<li><b>「全部自動で許可」モードは使わない</b>：これを使うと、上の安全装置が全部外れます。</li>
+</ul></div>
+<div class="card"><h4>3. Claude Code と同じ話し方・報告のしかたにする</h4>
+<ul>
+<li>結論から話す、確かでないことは「確実ではありません」と言う、終わったら「変更したこと／変更していないこと／確認が必要なこと」を出す。</li>
+<li>フォルダに Claude Code 用のルール（CLAUDE.md）があれば、Codexもそれを読むようにしています。同じフォルダで両方使っても、同じルールで動きます。</li>
+<li>お店の仕事向けに、<b>患者さんの個人情報を外に出さない</b>・<b>薬機法に触れる表現を書かない</b>も入れています。</li>
+</ul></div>
+<div class="card"><h4>4. Codex で気をつけること（Claude Code との違い）</h4>
+<ul>
+<li><b>前の会話を覚えていません</b>：新しい会話にするとリセットされます。覚えておいてほしいことは「これ覚えておいて」と言えば、指示書の「覚えておくこと」欄に書き足すようにしてあります。</li>
+<li><b>設定を変えたら開き直す</b>：設定ファイルや指示書を変えたら、Codexを一度閉じて開き直すと反映されます。</li>
+<li><b>上限に当たったら待つ</b>：使用量の上限は時間がたつと戻ります。急ぎの時は Claude Code に切り替えてください。</li>
+<li><b>使い分け</b>：見た目（ホームページやデザイン）を作るのは Codex、調べものや文章、仕組みづくりは Claude Code が得意です。最初はどちらでも大丈夫です。</li>
+</ul></div>
+</div>
 <section class="blk" id="setup"><div class="bh"><div><h2>① セットアップ用プロンプト（最初に1回だけ）</h2><p class="sub">Codexに貼るだけで、下の③④を設定フォルダに入れてくれます</p></div><button type="button" data-copy="setup-t">コピー</button></div><div class="box"><pre id="setup-t">Codex の初期設定をしてください。下の手順を上から順に実行し、最後に結果を日本語で報告してください。
 
 【手順】
