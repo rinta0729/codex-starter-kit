@@ -1,0 +1,19 @@
+# ~/.codex/config.toml に入れる設定
+# 注意: 上の4行（[ ] の見出しが付いていない行）は、ファイルの一番上、最初の [ ] 見出しより前に置くこと。
+#       末尾に足すと直前の [ ] の中の設定として読まれてしまう。同じ名前の行がすでにあれば、新しく足さずに値を書き換える。
+# 作業フォルダの中は確認なしで編集してよい。それ以外は確認を取る
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# フォルダに AGENTS.md が無くて CLAUDE.md がある時は、それを指示書として読む（Claude Code と同じルールで動く）
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+[sandbox_workspace_write]
+network_access = true
+
+# 複数エージェント（サブエージェント）を機能ごと止める。AGENTS.md に書くだけでは「お願い」なので、ここで確実に止める
+# 並列を使いたい日だけ、そのとき限定で:  codex -c agents.enabled=true
+[agents]
+enabled = false
+max_concurrent_threads_per_session = 1
+max_depth = 1
